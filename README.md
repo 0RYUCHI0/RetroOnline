@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RetroGameHub - Multi-Seller Retro Game Marketplace
 
 A complete online multi-seller retro game marketplace built with **PHP, MySQL, HTML, CSS, and JavaScript**.
@@ -356,3 +357,6 @@ For issues or questions:
 **Version:** 1.0.0
 
 Enjoy your RetroGameHub marketplace! 🎮
+=======
+# RetroOnline
+>>>>>>> c8899e551c310491ae4d929336be72ed80c76ca9
