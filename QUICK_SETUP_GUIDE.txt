@@ -1,0 +1,172 @@
+# Quick Setup Guide: Settings & Earnings Features
+
+## What's New?
+
+Your RetroGameHub marketplace now has two powerful seller tools:
+
+1. **Seller Settings Page** - Manage store info, security, and notifications
+2. **Earnings & Reports Dashboard** - View sales analytics with interactive charts
+
+## Installation (5 minutes)
+
+### Step 1: Update Database
+
+Go to this URL in your browser:
+```
+http://localhost/retroonline/migrate-add-seller-settings.php
+```
+
+You should see a success message.
+
+### Step 2: That's it! 
+
+The pages are ready to use.
+
+## How to Use
+
+### Access Settings Page
+
+**As a Seller:**
+1. Login to RetroGameHub
+2. Click "Settings" in the navigation menu
+3. Update your store information, password, and notifications
+4. Click "Save Changes" for each section
+
+### Access Earnings Page
+
+**As a Seller:**
+1. Login to RetroGameHub  
+2. Click "Earnings" in the navigation menu
+3. Select a time period: Last 30 Days, Last 12 Weeks, or Last 12 Months
+4. View your sales charts, top products, and earnings forecast
+5. Use the earnings breakdown table for detailed financial info
+
+## Demo Accounts to Test
+
+**Seller 1:**
+- Email: seller1@retrohub.com
+- Password: seller123
+
+**Seller 2:**
+- Email: seller2@retrohub.com
+- Password: seller123
+
+## Features at a Glance
+
+### Settings (3 Tabs)
+
+**🏪 Store Info Tab**
+- Update store name
+- Update contact information
+- Add store description
+
+**🔒 Security Tab**
+- Change your password
+- 2FA coming soon
+
+**🔔 Notifications Tab**
+- Toggle order notifications
+- Toggle review notifications
+- Toggle message notifications
+
+### Earnings (Complete Dashboard)
+
+**Summary Cards**
+- Gross Sales total
+- Platform Commission amount
+- Your Net Earnings
+- Total Orders count
+
+**Sales Charts**
+- Line chart of sales over time
+- Bar chart of commissions
+- Hover to see exact values
+- Choose time period (daily/weekly/monthly)
+
+**Additional Analytics**
+- Top 5 performing products
+- 7-day earnings forecast
+- Detailed earnings breakdown table
+
+## Important Notes
+
+⚠️ **Important for database setup:**
+- First-time users MUST visit the migration URL above
+- This creates the seller_settings table needed for notifications
+- Only needs to be done once
+
+✅ **Security:**
+- All forms use validation
+- Passwords must be 8+ characters
+- Passwords are verified before change
+- All data is protected with prepared statements
+
+📊 **Charts:**
+- Interactive - hover to see exact values
+- Responsive - works on desktop and mobile
+- Real-time data from your actual orders
+- Based on live database, not sample data
+
+## Troubleshooting
+
+### I see "table doesn't exist" error
+**Solution:** You need to run the migration. Visit:
+```
+http://localhost/retroonline/migrate-add-seller-settings.php
+```
+
+### Settings form isn't saving
+**Ensure:**
+- Store name is not empty
+- Password is at least 8 characters if changing password
+- You're logged in as a seller
+- JavaScript is enabled in your browser
+
+### Charts not showing
+**Ensure:**
+- You have at least one order on record
+- JavaScript is enabled
+- You can see data in the earnings summary cards
+- Try refreshing the page
+
+### Forecast section not showing
+**This is normal if:**
+- You have no sales history yet
+- You just started selling
+- Your sales are still being processed
+
+Once you have sales data, the forecast will calculate automatically.
+
+## File Locations
+
+All new files are located in:
+```
+c:\xampps\htdocs\retroonline\
+├── pages/seller/
+│   ├── settings.php (UPDATED)
+│   └── earnings.php (UPDATED)
+├── database.sql (UPDATED - added seller_settings table)
+├── migrate-add-seller-settings.php (NEW - run this once)
+└── SETTINGS_EARNINGS_GUIDE.md (this detailed guide)
+```
+
+## Next Steps
+
+1. ✅ Run migration script
+2. ✅ Test with seller demo accounts
+3. ✅ Update your store information
+4. ✅ Explore the earnings dashboard
+5. ✅ Configure notification preferences
+
+## Support
+
+- **Settings Issues?** Check SETTINGS_EARNINGS_GUIDE.md for detailed docs
+- **Database Issues?** Check the migration error message
+- **Data Issues?** Ensure you have completed orders on record
+- **Charts Issues?** Check browser console (F12 → Console tab)
+
+---
+
+**Version:** 1.0  
+**Last Updated:** 2026-02-02  
+**Status:** ✅ Ready for Production
