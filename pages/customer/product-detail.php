@@ -458,7 +458,11 @@ $user_name = SessionManager::get('user_name');
                                             $<?php echo number_format($rec['price'], 2); ?>
                                         </span>
                                         <span style="color: #f39c12; font-size: 12px;">
-                                            <?php echo str_repeat('★', floor($rec['avg_rating'])); ?><?php echo str_repeat('☆', 5 - floor($rec['avg_rating'])); ?>
+                                            <?php 
+                                            $rating = $rec['avg_rating'] ?? 0;
+                                            echo str_repeat('★', floor($rating)); 
+                                            echo str_repeat('☆', 5 - floor($rating)); 
+                                            ?>
                                         </span>
                                     </div>
                                     <a href="product-detail.php?id=<?php echo $rec['product_id']; ?>" class="btn btn-primary btn-block" style="margin-top: 10px; padding: 8px;">

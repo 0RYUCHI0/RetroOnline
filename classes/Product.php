@@ -4,6 +4,8 @@
  * Handles product management
  */
 
+require_once __DIR__ . '/ActivityLog.php';
+
 class Product {
     private $db;
 
@@ -248,6 +250,17 @@ class Product {
      * CANNOT change: condition (defines the variant), stock (managed separately)
      */
     public function updateProduct($product_id, $name, $console, $category, $price, $image_url = '', $demo_url = '') {
+        // Get old data
+        $oldProduct = $this->getProductById($product_id);
+        $oldData = [
+            'name' => $oldProduct['name'],
+            'console' => $oldProduct['console'],
+            'category' => $oldProduct['category'],
+            'price' => $oldProduct['price'],
+            'image_url' => $oldProduct['image_url'],
+            'demo_url' => $oldProduct['demo_url']
+        ];
+
         $stmt = $this->db->prepare("
             UPDATE products 
             SET name = ?, console = ?, category = ?, price = ?, image_url = ?, demo_url = ?
@@ -256,6 +269,18 @@ class Product {
         $stmt->bind_param("sssdssi", $name, $console, $category, $price, $image_url, $demo_url, $product_id);
 
         if ($stmt->execute()) {
+            // Log product update
+            $activityLog = new ActivityLog();
+            $seller_id = $oldProduct['seller_id'];
+            $activityLog->log(
+                $seller_id,
+                'product_update',
+                "Product '{$name}' updated",
+                'product',
+                $product_id,
+                $oldData,
+                ['name' => $name, 'console' => $console, 'category' => $category, 'price' => $price]
+            );
             return true;
         } else {
             throw new Exception("Failed to update product: " . $stmt->error);
@@ -308,10 +333,24 @@ class Product {
      * Delete product
      */
     public function deleteProduct($product_id) {
+        $product = $this->getProductById($product_id);
+        $seller_id = $product['seller_id'];
+        $product_name = $product['name'];
+
         $stmt = $this->db->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->bind_param("i", $product_id);
 
         if ($stmt->execute()) {
+            // Log product deletion
+            $activityLog = new ActivityLog();
+            $activityLog->log(
+                $seller_id,
+                'product_delete',
+                "Product '{$product_name}' deleted",
+                'product',
+                $product_id,
+                $product
+            );
             return true;
         } else {
             throw new Exception("Failed to delete product: " . $stmt->error);
@@ -322,15 +361,39 @@ class Product {
      * Update stock
      */
     public function updateStock($product_id, $quantity, $decrease = false) {
+        $oldStock = $this->getStock($product_id);
+        $product = $this->getProductById($product_id);
+        $seller_id = $product['seller_id'];
+        $product_name = $product['name'];
+
         if ($decrease) {
             $stmt = $this->db->prepare("UPDATE products SET stock = stock - ? WHERE product_id = ? AND stock >= ?");
             $stmt->bind_param("iii", $quantity, $product_id, $quantity);
+            $action_type = 'stock_decrease';
+            $action_desc = "Stock decreased by {$quantity} for '{$product_name}'";
         } else {
             $stmt = $this->db->prepare("UPDATE products SET stock = stock + ? WHERE product_id = ?");
             $stmt->bind_param("ii", $quantity, $product_id);
+            $action_type = 'stock_increase';
+            $action_desc = "Stock increased by {$quantity} for '{$product_name}'";
         }
 
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            // Log stock update
+            $newStock = $this->getStock($product_id);
+            $activityLog = new ActivityLog();
+            $activityLog->log(
+                $seller_id,
+                $action_type,
+                $action_desc,
+                'product',
+                $product_id,
+                ['stock' => $oldStock],
+                ['stock' => $newStock]
+            );
+            return true;
+        }
+        return false;
     }
 
     /**

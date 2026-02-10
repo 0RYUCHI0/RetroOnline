@@ -29,6 +29,7 @@ $user_name = SessionManager::get('user_name');
             </div>
             <div class="navbar-menu">
                 <a href="dashboard.php" class="nav-link">Dashboard</a>
+                <a href="activity-logs.php" class="nav-link">📊 Activity Logs</a>
                 <a href="applications.php" class="nav-link">Applications</a>
                 <a href="sellers.php" class="nav-link active">Sellers</a>
                 <a href="orders.php" class="nav-link">Orders</a>

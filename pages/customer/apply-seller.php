@@ -66,6 +66,7 @@ $user_info = $user->getUserById($user_id);
             </div>
             <div class="navbar-menu">
                 <a href="shop.php" class="nav-link">Shop</a>
+                <a href="wishlist.php" class="nav-link">❤️ Wishlist</a>
                 <a href="cart.php" class="nav-link">Cart</a>
                 <a href="orders.php" class="nav-link">Orders</a>
                 <a href="profile.php" class="nav-link">Profile</a>

@@ -4,6 +4,8 @@
  * Handles user authentication and management
  */
 
+require_once __DIR__ . '/ActivityLog.php';
+
 class User {
     private $db;
     private $user_id;
@@ -71,6 +73,16 @@ class User {
         SessionManager::set('user_name', $user['name']);
         SessionManager::set('user_roles', json_decode($user['roles'], true));
 
+        // Log login activity
+        $activityLog = new ActivityLog();
+        $activityLog->log(
+            $user['user_id'],
+            'login',
+            'User logged in successfully',
+            'user',
+            $user['user_id']
+        );
+
         return $user;
     }
 
@@ -88,10 +100,28 @@ class User {
      * Update user profile
      */
     public function updateProfile($user_id, $name, $phone) {
+        // Get old data
+        $oldUser = $this->getUserById($user_id);
+        $oldData = [
+            'name' => $oldUser['name'],
+            'phone' => $oldUser['phone']
+        ];
+
         $stmt = $this->db->prepare("UPDATE users SET name = ?, phone = ? WHERE user_id = ?");
         $stmt->bind_param("ssi", $name, $phone, $user_id);
         
         if ($stmt->execute()) {
+            // Log profile update
+            $activityLog = new ActivityLog();
+            $activityLog->log(
+                $user_id,
+                'profile_update',
+                'User profile updated',
+                'user',
+                $user_id,
+                $oldData,
+                ['name' => $name, 'phone' => $phone]
+            );
             return true;
         } else {
             throw new Exception("Update failed: " . $stmt->error);
@@ -116,6 +146,15 @@ class User {
         $stmt->bind_param("si", $hashedPassword, $user_id);
 
         if ($stmt->execute()) {
+            // Log password change
+            $activityLog = new ActivityLog();
+            $activityLog->log(
+                $user_id,
+                'password_change',
+                'User password changed',
+                'user',
+                $user_id
+            );
             return true;
         } else {
             throw new Exception("Password change failed");

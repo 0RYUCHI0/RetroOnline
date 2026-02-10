@@ -72,6 +72,7 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
             </div>
             <div class="navbar-menu">
                 <a href="dashboard.php" class="nav-link">Dashboard</a>
+                <a href="activity-logs.php" class="nav-link">📊 Activity Logs</a>
                 <a href="applications.php" class="nav-link">Applications</a>
                 <a href="sellers.php" class="nav-link">Sellers</a>
                 <a href="orders.php" class="nav-link active">Orders</a>
@@ -239,49 +240,53 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
 
     <style>
         .order-detail-page {
-            background: #1a1a2e;
-            color: #fff;
+            background: #f5f5f5;
+            color: #333;
         }
 
         .page-header {
             margin: 30px 0;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e94560;
+            border-bottom: 3px solid #0066cc;
         }
 
         .page-header h2 {
-            color: #e94560;
+            color: #0066cc;
             margin: 0;
             font-size: 2em;
+            font-weight: 600;
         }
 
         .page-header p {
-            color: #888;
+            color: #666;
             margin: 5px 0 0 0;
         }
 
         .detail-section {
-            background: #16213e;
+            background: #fff;
             padding: 30px;
             margin: 30px 0;
             border-radius: 8px;
-            border-left: 4px solid #e94560;
+            border-left: 5px solid #0066cc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .detail-section h3 {
-            color: #e94560;
+            color: #0066cc;
             margin-top: 0;
+            font-weight: 600;
         }
 
         .status-display {
-            background: #0f3460;
+            background: #f9f9f9;
             padding: 20px;
             border-radius: 4px;
+            border: 1px solid #e0e0e0;
         }
 
         .status-box p {
             margin: 12px 0;
-            color: #aaa;
+            color: #555;
         }
 
         .status-badge {
@@ -293,28 +298,28 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
         }
 
         .status-pending {
-            background: rgba(243, 156, 18, 0.2);
-            color: #f39c12;
+            background: #fff3cd;
+            color: #856404;
         }
 
         .status-processing {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
+            background: #cce5ff;
+            color: #004085;
         }
 
         .status-shipped {
-            background: rgba(155, 89, 182, 0.2);
-            color: #9b59b6;
+            background: #d1ecf1;
+            color: #0c5460;
         }
 
         .status-delivered {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
+            background: #d4edda;
+            color: #155724;
         }
 
         .status-in_transit {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
+            background: #d1ecf1;
+            color: #0c5460;
         }
 
         .two-column {
@@ -325,18 +330,19 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
         }
 
         .info-box {
-            background: #0f3460;
+            background: #f9f9f9;
             padding: 20px;
             border-radius: 4px;
+            border: 1px solid #e0e0e0;
         }
 
         .info-box p {
             margin: 10px 0;
-            color: #aaa;
+            color: #555;
         }
 
         .info-box strong {
-            color: #e94560;
+            color: #0066cc;
         }
 
         .items-table {
@@ -350,45 +356,46 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
         }
 
         .items-table thead {
-            background: #0f3460;
+            background: #0066cc;
         }
 
         .items-table th {
             padding: 15px;
             text-align: left;
-            color: #e94560;
-            font-weight: bold;
-            border-bottom: 2px solid #e94560;
+            color: #fff;
+            font-weight: 600;
+            border-bottom: 2px solid #0052a3;
         }
 
         .items-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid #0f3460;
-            color: #aaa;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
         }
 
         .items-table tbody tr:hover {
-            background: #0f3460;
+            background: #f0f7ff;
         }
 
         .no-tracking {
-            color: #888;
+            color: #999;
             font-style: italic;
         }
 
         .summary-box {
-            background: #0f3460;
+            background: #f9f9f9;
             padding: 20px;
             border-radius: 4px;
             max-width: 400px;
+            border: 1px solid #e0e0e0;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #1a1a2e;
-            color: #aaa;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
         }
 
         .summary-row.total {
@@ -396,7 +403,7 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
             padding: 15px 0;
             font-weight: bold;
             font-size: 1.2em;
-            color: #e94560;
+            color: #0066cc;
         }
 
         .commissions-table {
@@ -406,41 +413,41 @@ $total_commission = array_sum(array_column($commissions, 'commission_amount')) ?
         }
 
         .commissions-table thead {
-            background: #0f3460;
+            background: #0066cc;
         }
 
         .commissions-table th {
             padding: 15px;
             text-align: left;
-            color: #e94560;
-            font-weight: bold;
-            border-bottom: 2px solid #e94560;
+            color: #fff;
+            font-weight: 600;
+            border-bottom: 2px solid #0052a3;
         }
 
         .commissions-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid #0f3460;
-            color: #aaa;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
         }
 
         .commissions-table tbody tr:hover {
-            background: #0f3460;
+            background: #f0f7ff;
         }
 
         .empty-message {
-            color: #888;
+            color: #999;
             text-align: center;
             padding: 30px;
         }
 
         .btn-secondary {
-            background: #0f3460;
-            color: #fff;
-            border: 1px solid #e94560;
+            background: #fff;
+            color: #0066cc;
+            border: 1px solid #0066cc;
         }
 
         .btn-secondary:hover {
-            background: #1a1a2e;
+            background: #f0f7ff;
         }
 
         @media (max-width: 768px) {

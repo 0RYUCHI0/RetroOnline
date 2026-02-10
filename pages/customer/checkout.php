@@ -90,6 +90,7 @@ foreach ($cart as $product_id => $item) {
     $prod = $product->getProductById($product_id);
     if ($prod) {
         $item_total = $prod['price'] * $item['quantity'];
+        
         $cart_items[] = [
             'product_id' => $product_id,
             'name' => $prod['name'],
@@ -119,6 +120,7 @@ $user_name = SessionManager::get('user_name');
             </div>
             <div class="navbar-menu">
                 <a href="shop.php" class="nav-link">Shop</a>
+                <a href="wishlist.php" class="nav-link">❤️ Wishlist</a>
                 <a href="cart.php" class="nav-link">Cart</a>
                 <a href="orders.php" class="nav-link">Orders</a>
                 <a href="profile.php" class="nav-link">Profile</a>

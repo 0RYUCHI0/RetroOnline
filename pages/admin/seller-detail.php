@@ -65,6 +65,7 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
             <div class="navbar-menu">
                 <a href="dashboard.php" class="nav-link">Dashboard</a>
+                <a href="activity-logs.php" class="nav-link">📊 Activity Logs</a>
                 <a href="applications.php" class="nav-link">Applications</a>
                 <a href="sellers.php" class="nav-link active">Sellers</a>
                 <a href="orders.php" class="nav-link">Orders</a>
@@ -240,37 +241,40 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     <style>
         .seller-detail-page {
-            background: #1a1a2e;
-            color: #fff;
+            background: #f5f5f5;
+            color: #333;
         }
 
         .page-header {
             margin: 30px 0;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e94560;
+            border-bottom: 3px solid #0066cc;
         }
 
         .page-header h2 {
-            color: #e94560;
+            color: #0066cc;
             margin: 0;
+            font-weight: 600;
         }
 
         .page-header p {
-            color: #888;
+            color: #666;
             margin: 5px 0 0 0;
         }
 
         .detail-section {
-            background: #16213e;
+            background: #fff;
             padding: 30px;
             margin: 30px 0;
             border-radius: 8px;
-            border-left: 4px solid #e94560;
+            border-left: 5px solid #0066cc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .detail-section h3 {
-            color: #e94560;
+            color: #0066cc;
             margin-top: 0;
+            font-weight: 600;
         }
 
         .info-grid {
@@ -281,21 +285,22 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .info-item {
-            background: #0f3460;
+            background: #f9f9f9;
             padding: 15px;
             border-radius: 4px;
+            border: 1px solid #e0e0e0;
         }
 
         .info-item label {
-            color: #e94560;
-            font-weight: bold;
+            color: #0066cc;
+            font-weight: 600;
             display: block;
             margin-bottom: 8px;
         }
 
         .info-item p {
             margin: 0;
-            color: #aaa;
+            color: #555;
         }
 
         .stats-grid {
@@ -306,10 +311,11 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #e94560, #d63447);
+            background: linear-gradient(135deg, #0066cc, #0052a3);
             padding: 25px;
             border-radius: 8px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
         }
 
         .stat-value {
@@ -320,7 +326,7 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.9);
+            color: #fff;
             font-size: 0.95em;
         }
 
@@ -332,21 +338,24 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .product-card {
-            background: #0f3460;
+            background: #fff;
             border-radius: 8px;
             overflow: hidden;
             transition: transform 0.3s;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .product-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .product-image {
             width: 100%;
             height: 200px;
             overflow: hidden;
-            background: #1a1a2e;
+            background: #f5f5f5;
         }
 
         .product-image img {
@@ -361,24 +370,25 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
         .product-info h4 {
             margin: 0 0 8px 0;
-            color: #fff;
+            color: #333;
             font-size: 0.95em;
+            font-weight: 600;
         }
 
         .product-info p {
             margin: 5px 0;
-            color: #aaa;
+            color: #666;
             font-size: 0.9em;
         }
 
         .console {
-            color: #e94560;
-            font-weight: bold;
+            color: #0066cc;
+            font-weight: 600;
         }
 
         .price {
             font-size: 1.2em;
-            color: #2ecc71;
+            color: #28a745;
             font-weight: bold;
         }
 
@@ -387,11 +397,11 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .review-item {
-            background: #0f3460;
+            background: #f9f9f9;
             padding: 20px;
             margin-bottom: 15px;
             border-radius: 4px;
-            border-left: 3px solid #e94560;
+            border-left: 3px solid #0066cc;
         }
 
         .review-header {
@@ -407,22 +417,22 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .star {
-            color: #666;
+            color: #ddd;
             font-size: 1.2em;
         }
 
         .star.filled {
-            color: #f39c12;
+            color: #ffc107;
         }
 
         .review-date {
-            color: #888;
+            color: #999;
             font-size: 0.9em;
         }
 
         .review-comment {
             margin: 0;
-            color: #aaa;
+            color: #555;
             line-height: 1.5;
         }
 
@@ -433,25 +443,25 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .orders-table thead {
-            background: #0f3460;
+            background: #0066cc;
         }
 
         .orders-table th {
             padding: 15px;
             text-align: left;
-            color: #e94560;
-            font-weight: bold;
-            border-bottom: 2px solid #e94560;
+            color: #fff;
+            font-weight: 600;
+            border-bottom: 2px solid #0052a3;
         }
 
         .orders-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid #0f3460;
-            color: #aaa;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
         }
 
         .orders-table tbody tr:hover {
-            background: #0f3460;
+            background: #f0f7ff;
         }
 
         .badge {
@@ -459,9 +469,9 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.85em;
-            background: #0f3460;
-            color: #e94560;
-            border: 1px solid #e94560;
+            background: #f0f7ff;
+            color: #0066cc;
+            border: 1px solid #0066cc;
         }
 
         .status-badge {
@@ -472,39 +482,39 @@ $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .status-pending {
-            background: rgba(243, 156, 18, 0.2);
-            color: #f39c12;
+            background: #fff3cd;
+            color: #856404;
         }
 
         .status-processing {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
+            background: #cce5ff;
+            color: #004085;
         }
 
         .status-shipped {
-            background: rgba(155, 89, 182, 0.2);
-            color: #9b59b6;
+            background: #d1ecf1;
+            color: #0c5460;
         }
 
         .status-delivered {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
+            background: #d4edda;
+            color: #155724;
         }
 
         .empty-message {
-            color: #888;
+            color: #999;
             text-align: center;
             padding: 30px;
         }
 
         .btn-secondary {
-            background: #0f3460;
-            color: #fff;
-            border: 1px solid #e94560;
+            background: #fff;
+            color: #0066cc;
+            border: 1px solid #0066cc;
         }
 
         .btn-secondary:hover {
-            background: #1a1a2e;
+            background: #f0f7ff;
         }
 
         @media (max-width: 768px) {

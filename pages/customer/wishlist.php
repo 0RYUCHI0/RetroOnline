@@ -21,7 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
     
     try {
-        if ($_POST['action'] === 'remove_item') {
+        if ($_POST['action'] === 'add_to_wishlist') {
+            // ✅ STRICT DUPLICATE PREVENTION: Check before insert
+            $product_id = (int)$_POST['product_id'];
+            
+            // Database existence check using prepared statement
+            if ($wishlist->isInWishlist($customer_id, $product_id)) {
+                // ✅ Product already exists - do nothing, return success
+                echo json_encode(['success' => true, 'in_wishlist' => true, 'message' => 'Already in wishlist']);
+            } else {
+                // ✅ Product doesn't exist - insert with duplicate prevention
+                $wishlist->addToWishlist($customer_id, $product_id);
+                echo json_encode(['success' => true, 'in_wishlist' => true, 'message' => 'Added to wishlist']);
+            }
+        } elseif ($_POST['action'] === 'remove_item') {
             $product_id = (int)$_POST['product_id'];
             $wishlist->removeFromWishlist($customer_id, $product_id);
             echo json_encode(['success' => true, 'message' => 'Removed from wishlist']);

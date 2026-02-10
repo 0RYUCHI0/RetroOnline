@@ -4,6 +4,8 @@
  * Handles order management
  */
 
+require_once __DIR__ . '/ActivityLog.php';
+
 class Order {
     private $db;
 
@@ -140,12 +142,28 @@ class Order {
      * Update order status
      */
     public function updateOrderStatus($order_id, $status) {
+        // Get order info
+        $order = $this->getOrderById($order_id);
+        $oldStatus = $order['status'];
+
         $stmt = $this->db->prepare("
             UPDATE orders SET status = ? WHERE order_id = ?
         ");
         $stmt->bind_param("si", $status, $order_id);
 
         if ($stmt->execute()) {
+            // Log order status update
+            $user_id = $order['user_id'];
+            $activityLog = new ActivityLog();
+            $activityLog->log(
+                $user_id,
+                'order_status_update',
+                "Order status changed from {$oldStatus} to {$status}",
+                'order',
+                $order_id,
+                ['status' => $oldStatus],
+                ['status' => $status]
+            );
             return true;
         } else {
             throw new Exception("Failed to update order status");
