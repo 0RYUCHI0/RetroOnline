@@ -1,5 +1,6 @@
 <?php
 require_once '../../config.php';
+require_once '../../functions/notification-helpers.php';
 require_once '../../classes/Order.php';
 
 // Check if logged in
@@ -30,6 +31,11 @@ if ($order_data['user_id'] !== SessionManager::getUserId()) {
 $order_items = $order->getOrderItems($order_id);
 
 $user_name = SessionManager::get('user_name');
+
+// Get customer notifications
+$customer_id = SessionManager::getUserId();
+$notifications = getCustomerNotifications($customer_id);
+$unread_notifications = count($notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +61,9 @@ $user_name = SessionManager::get('user_name');
             </div>
         </div>
     </nav>
+
+    <!-- Notification Bar (Fixed Top-Right) -->
+    <?php echo renderNotificationBar($notifications); ?>
 
     <div class="container">
         <div class="page-header">

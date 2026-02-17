@@ -306,5 +306,22 @@ class Order {
         $result = $stmt->get_result()->fetch_assoc();
         return $result ? $result['phone'] : '';
     }
+
+    /**
+     * Get top locations by order count
+     */
+    public function getTopLocations($limit = 10) {
+        $stmt = $this->db->prepare("
+            SELECT a.city, a.state, a.country, COUNT(o.order_id) as order_count
+            FROM orders o
+            JOIN addresses a ON o.shipping_address_id = a.address_id
+            GROUP BY a.city, a.state, a.country
+            ORDER BY order_count DESC
+            LIMIT ?
+        ");
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?>

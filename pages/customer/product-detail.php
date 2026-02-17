@@ -1,5 +1,6 @@
 <?php
 require_once '../../config.php';
+require_once '../../functions/notification-helpers.php';
 require_once '../../classes/Product.php';
 require_once '../../classes/Review.php';
 require_once '../../classes/Wishlist.php';
@@ -113,6 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 $user_name = SessionManager::get('user_name');
+
+// Get customer notifications
+$customer_id = SessionManager::getUserId();
+$notifications = getCustomerNotifications($customer_id);
+$unread_notifications = count($notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,6 +144,9 @@ $user_name = SessionManager::get('user_name');
             </div>
         </div>
     </nav>
+
+    <!-- Notification Bar (Fixed Top-Right) -->
+    <?php echo renderNotificationBar($notifications); ?>
 
     <div class="container">
         <div class="product-detail">

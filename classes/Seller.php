@@ -209,5 +209,23 @@ class Seller {
         
         return $result->fetch_assoc();
     }
+
+    /**
+     * Get top sellers by revenue
+     */
+    public function getTopSellersByRevenue($limit = 10) {
+        $stmt = $this->db->prepare("
+            SELECT s.seller_id, s.store_name, SUM(oi.price * oi.quantity) as total_revenue
+            FROM sellers s
+            JOIN products p ON s.seller_id = p.seller_id
+            JOIN order_items oi ON p.product_id = oi.product_id
+            GROUP BY s.seller_id, s.store_name
+            ORDER BY total_revenue DESC
+            LIMIT ?
+        ");
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?>

@@ -120,6 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     exit;
 }
 
+
+
 $user_name = SessionManager::get('user_name');
 ?>
 <!DOCTYPE html>
@@ -129,6 +131,9 @@ $user_name = SessionManager::get('user_name');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - RetroGameHub</title>
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css">
+    <style>
+        /* Shop page specific styles */
+    </style>
 </head>
 <body class="shop-page">
     <nav class="navbar">
@@ -493,6 +498,8 @@ $user_name = SessionManager::get('user_name');
             badge.textContent = currentCount + 1;
         }
     }
+
+
     </script>
 </body>
 </html>

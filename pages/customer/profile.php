@@ -1,5 +1,6 @@
 <?php
 require_once '../../config.php';
+require_once '../../functions/notification-helpers.php';
 require_once '../../classes/User.php';
 
 // Check if logged in
@@ -38,6 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $user_name = SessionManager::get('user_name');
 $user_email = SessionManager::get('user_email');
+
+// Get customer notifications
+$customer_id = SessionManager::getUserId();
+$notifications = getCustomerNotifications($customer_id);
+$unread_notifications = count($notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -145,5 +151,9 @@ $user_email = SessionManager::get('user_email');
             margin-bottom: 20px;
         }
     </style>
+
+    <script>
+        <?php echo getNotificationScript(); ?>
+    </script>
 </body>
 </html>

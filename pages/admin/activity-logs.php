@@ -416,6 +416,7 @@ $entityTypes = [
             </div>
             <div class="navbar-menu">
                 <a href="dashboard.php" class="nav-link">Dashboard</a>
+                <a href="reports.php" class="nav-link">Reports</a>
                 <a href="activity-logs.php" class="nav-link active">Activity Logs</a>
                 <a href="applications.php" class="nav-link">Applications</a>
                 <a href="sellers.php" class="nav-link">Sellers</a>

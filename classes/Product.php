@@ -490,5 +490,22 @@ class Product {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+    /**
+     * Get top selling products
+     */
+    public function getTopSellingProducts($limit = 10) {
+        $stmt = $this->db->prepare("
+            SELECT p.product_id, p.name, p.price, p.stock, SUM(oi.quantity) as total_sold
+            FROM products p
+            JOIN order_items oi ON p.product_id = oi.product_id
+            GROUP BY p.product_id, p.name, p.price, p.stock
+            ORDER BY total_sold DESC
+            LIMIT ?
+        ");
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?>

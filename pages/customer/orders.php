@@ -104,5 +104,9 @@ $user_name = SessionManager::get('user_name');
     <footer class="footer">
         <p>&copy; 2026 RetroGameHub. All rights reserved.</p>
     </footer>
+
+    <script>
+        <?php echo getNotificationScript(); ?>
+    </script>
 </body>
 </html>

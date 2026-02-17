@@ -2,6 +2,7 @@
 require_once '../../config.php';
 require_once '../../classes/Seller.php';
 require_once '../../classes/Order.php';
+require_once '../../classes/Product.php';
 
 // Check if logged in and is admin
 if (!SessionManager::isLoggedIn() || !SessionManager::hasRole('admin')) {
@@ -10,10 +11,28 @@ if (!SessionManager::isLoggedIn() || !SessionManager::hasRole('admin')) {
 }
 
 $seller_obj = new Seller();
-$order = new Order();
+$order_obj = new Order();
+$product_obj = new Product();
 
 $all_sellers = $seller_obj->getAllSellers();
-$all_orders = $order->getAllOrders();
+$all_orders = $order_obj->getAllOrders();
+$all_products = $product_obj->getAllProducts();
+
+// Calculate platform revenue
+$total_revenue = 0;
+foreach ($all_orders as $ord) {
+    $total_revenue += $ord['total_amount'];
+}
+
+// Get top sellers by revenue
+$top_sellers = $seller_obj->getTopSellersByRevenue();
+
+// Get top selling products
+$top_products = $product_obj->getTopSellingProducts();
+
+// Get top locations
+$top_locations = $order_obj->getTopLocations();
+
 
 $user_name = SessionManager::get('user_name');
 ?>
@@ -33,7 +52,8 @@ $user_name = SessionManager::get('user_name');
             </div>
             <div class="navbar-menu">
                 <a href="dashboard.php" class="nav-link active">Dashboard</a>
-                <a href="activity-logs.php" class="nav-link">📊 Activity Logs</a>
+                <a href="reports.php" class="nav-link">Reports</a>
+                <a href="activity-logs.php" class="nav-link">Activity Logs</a>
                 <a href="applications.php" class="nav-link">Applications</a>
                 <a href="sellers.php" class="nav-link">Sellers</a>
                 <a href="orders.php" class="nav-link">Orders</a>
@@ -44,8 +64,8 @@ $user_name = SessionManager::get('user_name');
 
     <div class="container">
         <div class="page-header">
-            <h2>Admin Dashboard</h2>
-            <p>Welcome, <?php echo htmlspecialchars($user_name); ?>! Here's your system overview.</p>
+            <h2>Dashboard Overview</h2>
+            <p>Welcome, <?php echo htmlspecialchars($user_name); ?>! Quick overview of your platform.</p>
         </div>
 
         <!-- Stats Grid -->
@@ -59,92 +79,99 @@ $user_name = SessionManager::get('user_name');
                 <p>Total Orders</p>
             </div>
             <div class="stat-card">
-                <h3>
-                    $<?php 
-                    $total = 0;
-                    foreach ($all_orders as $ord) {
-                        $total += $ord['total_amount'];
-                    }
-                    echo number_format($total, 2);
-                    ?>
-                </h3>
+                <h3>$<?php echo number_format($total_revenue, 2); ?></h3>
                 <p>Platform Revenue</p>
+            </div>
+            <div class="stat-card">
+                <h3><?php echo count($all_products); ?></h3>
+                <p>Total Products</p>
             </div>
         </div>
 
-        <!-- Recent Orders -->
+        <!-- Top Sellers -->
         <div class="dashboard-section">
-            <h3>Recent Orders</h3>
-            <?php if (empty($all_orders)): ?>
-                <p>No orders yet</p>
-            <?php else: ?>
-                <table class="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Items</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach (array_slice($all_orders, 0, 10) as $ord): ?>
-                            <tr>
-                                <td>#<?php echo $ord['order_id']; ?></td>
-                                <td><?php echo htmlspecialchars($ord['customer_name']); ?></td>
-                                <td>$<?php echo number_format($ord['total_amount'], 2); ?></td>
-                                <td><span class="badge"><?php echo htmlspecialchars($ord['status']); ?></span></td>
-                                <td><?php echo $ord['item_count']; ?></td>
-                                <td><?php echo date('M d, Y', strtotime($ord['created_at'])); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <a href="orders.php" class="btn btn-primary">View All Orders</a>
-            <?php endif; ?>
-        </div>
-
-        <!-- Sellers Overview -->
-        <div class="dashboard-section">
-            <h3>Top Sellers</h3>
-            <?php if (empty($all_sellers)): ?>
-                <p>No sellers yet</p>
+            <h3>Top Sellers by Revenue</h3>
+            <?php if (empty($top_sellers)): ?>
+                <p>No seller data available</p>
             <?php else: ?>
                 <table class="dashboard-table">
                     <thead>
                         <tr>
                             <th>Store Name</th>
-                            <th>Owner</th>
-                            <th>Products</th>
-                            <th>Status</th>
-                            <th>Joined</th>
+                            <th>Total Revenue</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach (array_slice($all_sellers, 0, 5) as $seller): ?>
+                        <?php foreach ($top_sellers as $seller): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($seller['store_name']); ?></td>
-                                <td><?php echo htmlspecialchars($seller['name']); ?></td>
-                                <td><?php echo $seller['product_count']; ?></td>
-                                <td><span class="badge"><?php echo htmlspecialchars($seller['status']); ?></span></td>
-                                <td><?php echo date('M d, Y', strtotime($seller['created_at'])); ?></td>
+                                <td>$<?php echo number_format($seller['total_revenue'], 2); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <a href="sellers.php" class="btn btn-primary">View All Sellers</a>
+            <?php endif; ?>
+        </div>
+
+        <!-- Top Products -->
+        <div class="dashboard-section">
+            <h3>Top Selling Products</h3>
+            <?php if (empty($top_products)): ?>
+                <p>No products available</p>
+            <?php else: ?>
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Total Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($top_products as $prod): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($prod['name']); ?></td>
+                                <td><?php echo $prod['total_sold']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Top Locations -->
+        <div class="dashboard-section">
+            <h3>Top Locations by Orders</h3>
+            <?php if (empty($top_locations)): ?>
+                <p>No location data available</p>
+            <?php else: ?>
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>State/Country</th>
+                            <th>Total Orders</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($top_locations as $location): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($location['city']); ?></td>
+                                <td><?php echo htmlspecialchars($location['state'] . ', ' . $location['country']); ?></td>
+                                <td><?php echo $location['order_count']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             <?php endif; ?>
         </div>
 
         <!-- Quick Actions -->
         <div class="dashboard-section">
-            <h3>Quick Actions</h3>
+            <h3>Navigate</h3>
             <div class="action-buttons">
-                <a href="applications.php" class="btn btn-primary">Review Seller Applications</a>
-                <a href="orders.php" class="btn btn-primary">Manage Orders</a>
+                <a href="reports.php" class="btn btn-primary">View Detailed Reports</a>
                 <a href="sellers.php" class="btn btn-primary">Manage Sellers</a>
+                <a href="orders.php" class="btn btn-primary">Manage Orders</a>
             </div>
         </div>
     </div>
